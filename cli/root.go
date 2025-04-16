@@ -7,6 +7,7 @@ import (
 	"strings"
 	"terminalSQL/service"
 	"terminalSQL/service/meta"
+	"terminalSQL/service/query"
 )
 
 func StartCLI() {
@@ -47,6 +48,9 @@ Table Commands (requires active database):
   addcol <table> <col> <type>	→ add column
   rnmcol <table> <old> <new> 	→ rename column
   rmcol  <table> <column>    	→ remove column
+
+Raw Query (requires active database)
+  <query>						→ execute raw query
 
 Other:
   help                       	→ show this help menu
@@ -154,6 +158,13 @@ Other:
 		case strings.HasPrefix(userQuery, "exit"):
 			fmt.Println("ugh ok bye.")
 			return
+		default:
+			if activeDb == nil {
+				fmt.Println("❌ There is no active db")
+				continue
+			}
+			inputf := strings.TrimSpace(userQuery)
+			query.ExecRaw(conn.DB, inputf)
 		}
 	}
 }
